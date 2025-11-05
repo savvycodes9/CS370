@@ -2,22 +2,33 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.*;
 
+public class MainWindow{
 
-
-public class CalendarApp extends JFrame {
+    private JFrame frame;
     private JLabel monthLabel;
     private JPanel calendarPanel;
     private YearMonth currentMonth;
 
-    public CalendarApp() {
-        setTitle("Calendar Application");
-        setSize(600, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+    public MainWindow(String username){
+        init();
+        calendarDisplay();
+        updateCalendar();
+    }
 
-        // Start with current month
+    private void init(){
+        frame = new JFrame("Fast Track");
+
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.frame.setSize(600,400);
+        this.frame.setLocationRelativeTo(null);
+        this.frame.setLayout(new BorderLayout());
+        this.frame.setResizable(false);
+        this.frame.setVisible(true);
+    }
+
+    private void calendarDisplay(){
+
         currentMonth = YearMonth.now();
-
         // ===== TOP: Header with buttons =====
         JPanel headerPanel = new JPanel(new BorderLayout());
         JButton prevButton = new JButton("<");
@@ -30,11 +41,11 @@ public class CalendarApp extends JFrame {
         headerPanel.add(monthLabel, BorderLayout.CENTER);
         headerPanel.add(nextButton, BorderLayout.EAST);
 
-        add(headerPanel, BorderLayout.NORTH);
+        frame.add(headerPanel, BorderLayout.NORTH);
 
         // ===== CENTER: Calendar grid =====
         calendarPanel = new JPanel(new GridLayout(0, 7));
-        add(calendarPanel, BorderLayout.CENTER);
+        frame.add(calendarPanel, BorderLayout.CENTER);
 
         // Button actions
         prevButton.addActionListener(e -> {
@@ -80,29 +91,22 @@ public class CalendarApp extends JFrame {
 
             // Example: action when clicking a day
             dayButton.addActionListener(e -> {
-                //JOptionPane.showMessageDialog(this, "You clicked " );//+ dayButton.getText());
-                int choice = JOptionPane.showOptionDialog(this, "Create New Event", "New Event", JOptionPane.YES_NO_OPTION, 1, dayButton.getIcon(), user_options , 2);
-                    if(choice == 0){
-                        System.out.println("User selected create public event");
-                    } else if( choice ==1){
-                        System.out.println("user selected create private event");
-                    } else if (choice ==2){
-                        System.out.println("user selected create group study");
-                    } else {
-                        System.out.println("Invalid choice");
-                    }
+                //JOptionPane.showMessageDialog(frame, "You clicked " );//+ dayButton.getText());
+                int choice = JOptionPane.showOptionDialog(frame, "Create New Event", "New Event", JOptionPane.YES_NO_OPTION, 1, dayButton.getIcon(), user_options , 2);
+                if(choice == 0){
+                    System.out.println("User selected create public event");
+                } else if( choice ==1){
+                    System.out.println("user selected create private event");
+                } else if (choice ==2){
+                    System.out.println("user selected create group study");
+                } else {
+                    System.out.println("Invalid choice");
+                }
             });
         }
 
         // Refresh
         calendarPanel.revalidate();
         calendarPanel.repaint();
-    }
-
-    public static void main(String[] args) {
-
-        SwingUtilities.invokeLater(() -> {
-            new CalendarApp().setVisible(true);
-        });
     }
 }
