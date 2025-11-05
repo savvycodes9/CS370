@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.Map;
 
 public class LogInWindow {
     private JFrame frame;
@@ -56,7 +57,9 @@ public class LogInWindow {
                 String username = userText.getText();
                 String password = passText.getText();
 
-                if(username.equals("Erika") && password.equals("12345")){
+                Map<String, String[]> users = Database.loadUsers();
+
+                if (Database.login(username, password, users)) {
                     success.setText("Log In Successful");
                     frame.dispose();
                     new MainWindow(username);

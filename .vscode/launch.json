@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launcher",
+            "request": "launch",
+            "mainClass": "Launcher",
+            "projectName": "CS370_201b4cd3"
+        },
+        {
+            "type": "java",
+            "name": "CalendarApp",
+            "request": "launch",
+            "mainClass": "CalendarApp",
+            "projectName": "CS370_201b4cd3"
+        },
+        {
+            "type": "java",
             "name": "Database",
             "request": "launch",
             "mainClass": "Database",
