@@ -97,7 +97,7 @@ public class MainWindow{
             dayButton.setBackground(Color.white); //sets button background
             dayButton.setMargin(new Insets(4,6,4,6)); //padding
 
-            if(day == today){
+            if(day == today && currentMonth.equals(YearMonth.from(todayDate))){
                 dayButton.setBackground(new Color(0xadd8e6));
             }
 
