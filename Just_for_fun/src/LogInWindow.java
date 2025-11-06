@@ -9,7 +9,8 @@ public class LogInWindow {
     private JTextField userText;
     private JPasswordField passText;
     private JLabel success;
-    private JButton button;
+    private JButton loginbtn;
+    private JButton createAccbtn;
 
     public LogInWindow() {
         initateLoginUI();
@@ -20,6 +21,7 @@ public class LogInWindow {
         frame = new JFrame("Fast Track");
         frame.setSize(350, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
         frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(null);
@@ -39,9 +41,13 @@ public class LogInWindow {
         passText.setBounds(100, 60, 165, 25);
         panel.add(passText);
 
-        button = new JButton("Log In");
-        button.setBounds(140, 100, 80, 25);
-        panel.add(button);
+        loginbtn = new JButton("Log In");
+        loginbtn.setBounds(10, 100, 80, 25);
+        panel.add(loginbtn);
+
+        createAccbtn = new JButton("Create Account");
+        createAccbtn.setBounds(110, 100, 150, 25);
+        panel.add(createAccbtn);
 
         success = new JLabel("");
         success.setBounds(10, 130, 300, 25);
@@ -51,7 +57,7 @@ public class LogInWindow {
     }
 
     private void authActions() {
-        button.addActionListener(new ActionListener() {
+        loginbtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String username = userText.getText();
@@ -60,7 +66,6 @@ public class LogInWindow {
                 Map<String, String[]> users = Database.loadUsers();
 
                 if (Database.login(username, password, users)) {
-                    success.setText("Log In Successful");
                     frame.dispose();
                     new MainWindow(username);
                 } else {

@@ -75,8 +75,11 @@ public class MainWindow{
 
         // Figure out the start day and number of days
         LocalDate firstDay = currentMonth.atDay(1);
+        LocalDate todayDate = LocalDate.now();
+        int today = todayDate.getDayOfMonth();
         int daysInMonth = currentMonth.lengthOfMonth();
         int startDay = firstDay.getDayOfWeek().getValue() % 7; // Sunday=0
+
 
         // Empty slots before first day
         for (int i = 0; i < startDay; i++) {
@@ -86,6 +89,18 @@ public class MainWindow{
         // Fill in days
         for (int day = 1; day <= daysInMonth; day++) {
             JButton dayButton = new JButton(String.valueOf(day));
+            dayButton.setFocusPainted(false); //removes the dotted rectangle
+            dayButton.setBorderPainted(true); //draws border
+            dayButton.setBorder(BorderFactory.createLineBorder(Color.gray)); //sets border to a colored line
+            dayButton.setContentAreaFilled(true); //interior of the button is filled
+            dayButton.setOpaque(true); //button is non-transparent
+            dayButton.setBackground(Color.white); //sets button background
+            dayButton.setMargin(new Insets(4,6,4,6)); //padding
+
+            if(day == today){
+                dayButton.setBackground(new Color(0xadd8e6));
+            }
+
             calendarPanel.add(dayButton);
             Object[] user_options = {"Create Public Event", "Create Private Event", "Create Group Study"};
 
