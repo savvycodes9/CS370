@@ -4,6 +4,7 @@ import java.time.*;
 
 public class MainWindow{
 
+    private JPanel sidebar;
     private JFrame frame;
     private JLabel monthLabel;
     private JPanel calendarPanel;
@@ -13,6 +14,7 @@ public class MainWindow{
         init();
         calendarDisplay();
         updateCalendar();
+        sidebarDisplay();
     }
 
     private void init(){
@@ -25,7 +27,26 @@ public class MainWindow{
         this.frame.setResizable(false);
         this.frame.setVisible(true);
     }
+    private void sidebarDisplay(){
+        //sidebar basics, title and create event button
+        sidebar = new JPanel();
+        sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
+        sidebar.setPreferredSize(new Dimension(200,0));
+        JLabel title = new JLabel("User Options", JLabel.CENTER);
+        title.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sidebar.add(title);
 
+
+
+        JButton menuButton = new JButton("Create Event");
+        JPopupMenu menu = new JPopupMenu();
+
+
+        JButton addevent = new JButton("create event");
+        sidebar.add(menuButton);
+        frame.add(sidebar, BorderLayout.WEST);
+    }
     private void calendarDisplay(){
 
         currentMonth = YearMonth.now();
