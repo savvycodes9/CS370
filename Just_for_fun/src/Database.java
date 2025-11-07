@@ -1,7 +1,11 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -41,6 +45,24 @@ public class Database {
         return false;
     }
 
+    public static boolean saveEvent(String username, String eventName, String date, String description, boolean privateEvent) {
+    Path eventsFile = Paths.get(System.getProperty("user.dir"))
+                        .resolve("Just_for_fun")
+                           .resolve("Database")
+                           .resolve("events.txt")
+                           .normalize();
+
+    try (BufferedWriter bw = Files.newBufferedWriter(eventsFile, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+        bw.write(username + "," + eventName + "," + date + "," + description + "," + privateEvent);
+        bw.newLine();
+        System.out.println("Event saved to: " + eventsFile.toAbsolutePath());
+        return true;
+    } catch (IOException e) {
+        System.out.println("Error saving event: " + e.getMessage());
+        return false;
+    }
+    }
+
      public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Map<String, String[]> users = loadUsers();
@@ -57,6 +79,28 @@ public class Database {
         } else {
                 System.out.println("Invalid username or password.");
         }
+
+        
+        System.out.println("1. Login");
+        System.out.print("event name: ");
+        String name = sc.nextLine();
+        System.out.print("date: ");
+        String date = sc.nextLine();
+        System.out.print("description: ");
+        String description = sc.nextLine();
+        System.out.print("Is this event private? Y/N: ");
+        String ifPrivate = sc.nextLine().trim().toLowerCase();
+        boolean privateEvent = false;
+        privateEvent = ifPrivate.equals("y") || ifPrivate.equals("yes");
+        if(saveEvent(username,name,date,description,privateEvent)) {
+                System.out.println("Event saved!");
+        } else {
+                 System.out.println("Error saving event.");
+        }
+        
+
+        //saveEvent("brand104", "meeting", "11/06/2025", "study meeting in room 101", false);
+        
 
         sc.close();
      }
