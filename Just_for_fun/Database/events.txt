@@ -1,0 +1,2 @@
+brand104,meeting,11/06/2025,study meeting in room 101,false
+brand104,math exam,11/08/2025,math264 exam,false
