@@ -24,7 +24,6 @@ public class MainWindow{
         this.frame.setSize(600,400);
         this.frame.setLocationRelativeTo(null);
         this.frame.setLayout(new BorderLayout());
-        this.frame.setResizable(false);
         this.frame.setVisible(true);
     }
     private void sidebarDisplay(){
@@ -37,11 +36,8 @@ public class MainWindow{
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         sidebar.add(title);
 
-
-
         JButton menuButton = new JButton("Create Event");
         JPopupMenu menu = new JPopupMenu();
-
 
         JButton addevent = new JButton("create event");
         sidebar.add(menuButton);
