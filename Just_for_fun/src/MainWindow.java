@@ -1,14 +1,18 @@
 import javax.swing.*;
 import java.awt.*;
 import java.time.*;
+import java.awt.event.*;
 
 public class MainWindow{
 
     private JPanel sidebar;
+    private JPanel mainPanel;
     private JFrame frame;
     private JLabel monthLabel;
     private JPanel calendarPanel;
     private YearMonth currentMonth;
+    private boolean sidebarVisible = false;
+    private final int sidebarWidth = 200;
 
     public MainWindow(String username){
         init();
@@ -19,34 +23,68 @@ public class MainWindow{
 
     private void init(){
         frame = new JFrame("Fast Track");
-
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setSize(600,400);
         this.frame.setLocationRelativeTo(null);
         this.frame.setLayout(new BorderLayout());
-        this.frame.setResizable(false);
+        //this.frame.setResizable(false);
         this.frame.setVisible(true);
     }
-    private void sidebarDisplay(){
-        //sidebar basics, title and create event button
-        sidebar = new JPanel();
-        sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
-        sidebar.setPreferredSize(new Dimension(200,0));
-        JLabel title = new JLabel("User Options", JLabel.CENTER);
-        title.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        sidebar.add(title);
+    private void sidebarDisplay() {
+        final int sidebarWidth = 180; // width of sidebar
 
+        // Container for toggle + sidebar content
+        JPanel sidebarContainer = new JPanel(new BorderLayout());
+        sidebarContainer.setPreferredSize(new Dimension(sidebarWidth, frame.getHeight()));
+        frame.add(sidebarContainer, BorderLayout.WEST);
 
+        // --- Toggle button at top (always visible) ---
+        JButton toggleButton = new JButton("☰ Menu");
+        sidebarContainer.add(toggleButton, BorderLayout.NORTH);
 
-        JButton menuButton = new JButton("Create Event");
-        JPopupMenu menu = new JPopupMenu();
+        // --- Sidebar content (hidden by default) ---
+        JPanel sidebarContent = new JPanel();
+        sidebarContent.setLayout(new BoxLayout(sidebarContent, BoxLayout.Y_AXIS));
+        sidebarContent.setBackground(new Color(245, 245, 245));
 
+        // --- Top section: Groups ---
+        JPanel topSection = new JPanel();
+        topSection.setLayout(new BoxLayout(topSection, BoxLayout.Y_AXIS));
+        topSection.setBorder(BorderFactory.createTitledBorder("My Groups"));
+        topSection.add(new JButton("Study Group A"));
+        topSection.add(new JButton("Study Group B"));
+        sidebarContent.add(topSection);
 
-        JButton addevent = new JButton("create event");
-        sidebar.add(menuButton);
-        frame.add(sidebar, BorderLayout.WEST);
+        // --- Middle section: Reminders ---
+        sidebarContent.add(Box.createVerticalGlue()); // push middle section toward center
+        JPanel middleSection = new JPanel();
+        middleSection.setLayout(new BoxLayout(middleSection, BoxLayout.Y_AXIS));
+        middleSection.setBorder(BorderFactory.createTitledBorder("Reminders"));
+        middleSection.add(new JLabel("Assignment due tomorrow"));
+        middleSection.add(new JLabel("Team meeting at 5 PM"));
+        sidebarContent.add(middleSection);
+
+        // --- Bottom section: Create Event ---
+        sidebarContent.add(Box.createVerticalGlue()); // push bottom section toward bottom
+        JPanel bottomSection = new JPanel();
+        bottomSection.setLayout(new BoxLayout(bottomSection, BoxLayout.Y_AXIS));
+        bottomSection.setBorder(BorderFactory.createTitledBorder("Create Event"));
+        bottomSection.add(new JButton("➕ New Event"));
+        sidebarContent.add(bottomSection);
+
+        // Hide sidebar content initially
+        sidebarContent.setVisible(false);
+        sidebarContainer.add(sidebarContent, BorderLayout.CENTER);
+
+        // --- Toggle button action ---
+        toggleButton.addActionListener(e -> {
+            sidebarContent.setVisible(!sidebarContent.isVisible());
+            frame.revalidate();
+            frame.repaint();
+        });
     }
+
+
     private void calendarDisplay(){
 
         currentMonth = YearMonth.now();
