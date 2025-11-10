@@ -34,7 +34,7 @@ public class MainWindow{
         final int sidebarWidth = 180; // width of sidebar
 
         // Container for toggle + sidebar content
-        JPanel sidebarContainer = new JPanel(new BorderLayout());
+        JPanel sidebarContainer  = new JPanel(new BorderLayout());
         sidebarContainer.setPreferredSize(new Dimension(sidebarWidth, frame.getHeight()));
         frame.add(sidebarContainer, BorderLayout.WEST);
 
