@@ -1,7 +1,5 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 import java.util.Map;
 
 public class LogInWindow {
@@ -67,7 +65,7 @@ public class LogInWindow {
 
                 if (Database.login(username, password, users)) {
                     frame.dispose();
-                    new MainWindow(username);
+                    new CalendarFrame(username);
                 } else {
                     success.setText("Invalid username or password");
                 }

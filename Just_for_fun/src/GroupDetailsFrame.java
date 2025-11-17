@@ -4,7 +4,7 @@ import javax.swing.JButton;
 
 public class GroupDetailsFrame {
 
-    private JFrame groupFrame;
+    private BaseFrame groupFrame;
     private JLabel groupTitleLabel;
     private JLabel addUserLabel;
     private JTextField titleText;
@@ -14,19 +14,16 @@ public class GroupDetailsFrame {
     private JButton rmvUserBtn;
     private JPanel userList;
 
-
     public GroupDetailsFrame(){
         init();
         requestForm();
+        groupFrame.showFrame();
     }
 
     private void init(){
-        groupFrame = new JFrame("Create Group");
-        this.groupFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.groupFrame.setSize(600,400);
-        this.groupFrame.setLocationRelativeTo(null);
-        this.groupFrame.setLayout(new BorderLayout());
-        this.groupFrame.setVisible(true);
+        groupFrame = new BaseFrame("Create Group");
+        groupFrame.setCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        groupFrame.getFrame().setResizable(false);
     }
 
     private void requestForm(){
@@ -72,13 +69,10 @@ public class GroupDetailsFrame {
         panel.add(addUserBtn);
         panel.add(rmvUserBtn);
 
-        groupFrame.add(panel);
-        groupFrame.setVisible(true);
+        groupFrame.add(panel,BorderLayout.CENTER);
     }
 
     public static void main(String[] args){
-
         new GroupDetailsFrame();
-
     }
 }

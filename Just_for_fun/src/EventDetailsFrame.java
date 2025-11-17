@@ -1,9 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class EventDetailsFrame {
+public class EventDetailsFrame{
 
-    private JFrame eventFrame;
+    private BaseFrame eventFrame;
     private JLabel eventTitle;
     private JTextField eventTitleText;
     private JLabel dayLabel;
@@ -19,15 +19,13 @@ public class EventDetailsFrame {
     public EventDetailsFrame() {
         init();
         eventForm();
+        eventFrame.showFrame();
     }
 
     private void init() {
-        eventFrame = new JFrame("Untitled - Event");
-        eventFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        eventFrame.setSize(600, 400);
-        eventFrame.setLocationRelativeTo(null);
-        eventFrame.setLayout(new BorderLayout());
-        eventFrame.setResizable(false);
+        eventFrame = new BaseFrame("Untitled - Event");
+        eventFrame.setCloseOperation(JFrame.DISPOSE_ON_CLOSE); // override default
+        eventFrame.getFrame().setResizable(false);
     }
 
     private void eventForm() {
@@ -82,11 +80,10 @@ public class EventDetailsFrame {
         panel.add(saveBtn);
 
         eventFrame.add(panel, BorderLayout.CENTER);
-        eventFrame.setVisible(true);
     }
 
     private String[] generateTimes() {
-        String[] times = new String[48]; //
+        String[] times = new String[48];
         int index = 0;
         for (int hour = 0; hour < 24; hour++) {
             for (int min = 0; min < 60; min += 30) {
@@ -100,8 +97,6 @@ public class EventDetailsFrame {
     }
 
     public static void main(String[] args) {
-
         new EventDetailsFrame();
-
     }
 }

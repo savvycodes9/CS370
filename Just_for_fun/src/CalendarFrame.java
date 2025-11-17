@@ -1,9 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.time.*;
-import java.awt.event.*;
 
-public class MainWindow{
+public class CalendarFrame {
 
     private JPanel sidebar;
     private JPanel mainPanel;
@@ -14,7 +13,7 @@ public class MainWindow{
     private boolean sidebarVisible = false;
     private final int sidebarWidth = 200;
 
-    public MainWindow(String username){
+    public CalendarFrame(String username){
         init();
         calendarDisplay();
         updateCalendar();
@@ -92,6 +91,7 @@ public class MainWindow{
         JPanel headerPanel = new JPanel(new BorderLayout());
         JButton prevButton = new JButton("<");
         JButton nextButton = new JButton(">");
+        JButton todayButton = new JButton("Today");
 
         monthLabel = new JLabel("", JLabel.CENTER);
         monthLabel.setFont(new Font("Times", Font.BOLD, 20));
@@ -99,6 +99,7 @@ public class MainWindow{
         headerPanel.add(prevButton, BorderLayout.WEST);
         headerPanel.add(monthLabel, BorderLayout.CENTER);
         headerPanel.add(nextButton, BorderLayout.EAST);
+        headerPanel.add(todayButton, BorderLayout.AFTER_LAST_LINE);
 
         frame.add(headerPanel, BorderLayout.NORTH);
 
@@ -113,6 +114,10 @@ public class MainWindow{
         });
         nextButton.addActionListener(e -> {
             currentMonth = currentMonth.plusMonths(1);
+            updateCalendar();
+        });
+        todayButton.addActionListener(e -> {
+            currentMonth = YearMonth.now();
             updateCalendar();
         });
 
