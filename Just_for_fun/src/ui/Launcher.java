@@ -1,4 +1,4 @@
-package launcher;
+package ui;
 
 import ui.LoginFrame;
 
