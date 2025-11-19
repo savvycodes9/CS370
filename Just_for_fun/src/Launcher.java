@@ -6,7 +6,7 @@ public class Launcher {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                LogInWindow loginJFrame =  new LogInWindow();
+                LogInFrame loginJFrame =  new LogInFrame();
             }
         });
     }
