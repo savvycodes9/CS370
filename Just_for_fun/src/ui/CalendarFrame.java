@@ -53,11 +53,16 @@ public class CalendarFrame {
         JPanel sidebarContent = new JPanel();
         sidebarContent.setLayout(new BoxLayout(sidebarContent, BoxLayout.Y_AXIS));
         sidebarContent.setBackground(new Color(245, 245, 245));
-        sidebarContent.setVisible(false);
+        sidebarContent.setVisible(true);
 
         JPanel topSection = new JPanel();
         topSection.setLayout(new BoxLayout(topSection, BoxLayout.Y_AXIS));
         topSection.setBorder(BorderFactory.createTitledBorder("My Groups"));
+        JButton addgroupButton = new JButton("➕ Add Group");
+        topSection.add(addgroupButton);
+        addgroupButton.addActionListener(e -> {
+
+        });
         topSection.add(new JButton("Study Group A"));
         topSection.add(new JButton("Study Group B"));
         sidebarContent.add(topSection);
@@ -76,10 +81,15 @@ public class CalendarFrame {
         JPanel bottomSection = new JPanel();
         bottomSection.setLayout(new BoxLayout(bottomSection, BoxLayout.Y_AXIS));
         bottomSection.setBorder(BorderFactory.createTitledBorder("Create Event"));
-        bottomSection.add(new JButton("➕ New Event"));
+        JButton event_creator = new JButton("➕ Create Event");
+        bottomSection.add(event_creator);
         sidebarContent.add(bottomSection);
 
-        sidebarContainer.add(sidebarContent, BorderLayout.CENTER);
+        // creating event from create events button on the sidebar
+        event_creator.addActionListener(e -> {
+                });
+
+            sidebarContainer.add(sidebarContent, BorderLayout.CENTER);
 
         toggleButton.addActionListener(e -> {
             sidebarContent.setVisible(!sidebarContent.isVisible());
@@ -190,9 +200,9 @@ public class CalendarFrame {
                     boolean isPrivate = (choice == 1);
                     new CreateEventWindow(clickedDate, currentUser);
 
-                } else if (choice == 2) {
-                    System.out.println("User selected group event");
-                }
+                } //else if (choice == 2) {
+                    //System.out.println("User selected group event");
+                //}
 
             });
 
