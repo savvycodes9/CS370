@@ -61,7 +61,7 @@ public class CalendarFrame {
         JButton addgroupButton = new JButton("➕ Add Group");
         topSection.add(addgroupButton);
         addgroupButton.addActionListener(e -> {
-
+        new GroupDetailsFrame();
         });
         topSection.add(new JButton("Study Group A"));
         topSection.add(new JButton("Study Group B"));
@@ -87,6 +87,7 @@ public class CalendarFrame {
 
         // creating event from create events button on the sidebar
         event_creator.addActionListener(e -> {
+            new CreateEventWindow(this.currentUser );
                 });
 
             sidebarContainer.add(sidebarContent, BorderLayout.CENTER);

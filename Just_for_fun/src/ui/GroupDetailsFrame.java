@@ -51,8 +51,9 @@ public class GroupDetailsFrame {
         userText.setBounds(230,50,130,25);
         panel.add(userText);
 
-        saveBtn = new JButton("Save and Close");
-        saveBtn.setBounds(10,20,135,100);
+        JButton saveBtn = new JButton("Save and Close");
+        panel.add(saveBtn);
+        saveBtn.setBounds(10,20,150,100);
 
         saveBtn.setFocusPainted(false);
         saveBtn.setBorderPainted(false);
@@ -61,12 +62,12 @@ public class GroupDetailsFrame {
         saveBtn.setBackground(new Color(0xadd8e6));
         saveBtn.setForeground(Color.BLACK);
 
-        addUserBtn = new JButton("Add");
-        addUserBtn.setBounds(389,50,60,20);
+        JButton addUserBtn = new JButton("Add");
+        addUserBtn.setBounds(389,50,90,20);
         addUserBtn.setFont(new Font("Arial", Font.PLAIN, 10));
 
-        rmvUserBtn = new JButton("-");
-        rmvUserBtn.setBounds(389,100,60,20);
+        rmvUserBtn = new JButton("Remove user");
+        rmvUserBtn.setBounds(389,100,90,20);
         rmvUserBtn.setFont(new Font("Arial", Font.PLAIN, 10));
 
         panel.add(saveBtn);
