@@ -10,6 +10,8 @@ import java.time.LocalTime;
 
 public class CreateEventWindow {
 
+    private CalendarFrame parentCalendar;
+
     private JFrame frame;
     private JTextField dateField;
     private JTextField titleField;
@@ -24,19 +26,22 @@ public class CreateEventWindow {
     private User currentUser;
     private EventController eventController;
 
-    public CreateEventWindow(LocalDate date, User user) {
-        this.selectedDate = date;
-        this.currentUser = user;
-        this.eventController = new EventController();
+    public CreateEventWindow(LocalDate date, User user, CalendarFrame parent) {
+    this.selectedDate = date;
+    this.currentUser = user;
+    this.eventController = new EventController();
+    this.parentCalendar = parent;
 
-        initUI();
+    initUI();
     }
-    public CreateEventWindow(User user) {
-        this.selectedDate = LocalDate.now();
-        this.currentUser = user;
-        this.eventController = new EventController();
 
-        initUI1();
+    public CreateEventWindow(User user, CalendarFrame parent) {
+    this.selectedDate = LocalDate.now();
+    this.currentUser = user;
+    this.eventController = new EventController();
+    this.parentCalendar = parent;
+
+    initUI1();
     }
 
     private void initUI() {
@@ -136,6 +141,7 @@ public class CreateEventWindow {
 
             if (success) {
                 JOptionPane.showMessageDialog(frame, "Event created!");
+                parentCalendar.updateCalendar(); // refresh the calendar UI
                 frame.dispose();
             } else {
                 JOptionPane.showMessageDialog(frame, "Error creating event.");
@@ -165,6 +171,7 @@ public class CreateEventWindow {
 
             if (success) {
                 JOptionPane.showMessageDialog(frame, "Event created!");
+                parentCalendar.updateCalendar();
                 frame.dispose();
             } else {
                 JOptionPane.showMessageDialog(frame, "Error creating event.");

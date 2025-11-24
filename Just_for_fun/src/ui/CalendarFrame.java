@@ -53,16 +53,11 @@ public class CalendarFrame {
         JPanel sidebarContent = new JPanel();
         sidebarContent.setLayout(new BoxLayout(sidebarContent, BoxLayout.Y_AXIS));
         sidebarContent.setBackground(new Color(245, 245, 245));
-        sidebarContent.setVisible(true);
+        sidebarContent.setVisible(false);
 
         JPanel topSection = new JPanel();
         topSection.setLayout(new BoxLayout(topSection, BoxLayout.Y_AXIS));
         topSection.setBorder(BorderFactory.createTitledBorder("My Groups"));
-        JButton addgroupButton = new JButton("➕ Add Group");
-        topSection.add(addgroupButton);
-        addgroupButton.addActionListener(e -> {
-        new GroupDetailsFrame();
-        });
         topSection.add(new JButton("Study Group A"));
         topSection.add(new JButton("Study Group B"));
         sidebarContent.add(topSection);
@@ -81,16 +76,10 @@ public class CalendarFrame {
         JPanel bottomSection = new JPanel();
         bottomSection.setLayout(new BoxLayout(bottomSection, BoxLayout.Y_AXIS));
         bottomSection.setBorder(BorderFactory.createTitledBorder("Create Event"));
-        JButton event_creator = new JButton("➕ Create Event");
-        bottomSection.add(event_creator);
+        bottomSection.add(new JButton("➕ New Event"));
         sidebarContent.add(bottomSection);
 
-        // creating event from create events button on the sidebar
-        event_creator.addActionListener(e -> {
-            new CreateEventWindow(this.currentUser );
-                });
-
-            sidebarContainer.add(sidebarContent, BorderLayout.CENTER);
+        sidebarContainer.add(sidebarContent, BorderLayout.CENTER);
 
         toggleButton.addActionListener(e -> {
             sidebarContent.setVisible(!sidebarContent.isVisible());
@@ -130,7 +119,7 @@ public class CalendarFrame {
         updateCalendar();
     }
 
-    private void updateCalendar() {
+    public void updateCalendar() {
         calendarPanel.removeAll();
 
         monthLabel.setText(currentMonth.getMonth() + " " + currentMonth.getYear());
@@ -146,45 +135,70 @@ public class CalendarFrame {
         int daysInMonth = currentMonth.lengthOfMonth();
         int startDay = firstDay.getDayOfWeek().getValue() % 7;
 
+        // Empty cells before the first day of the month
         for (int i = 0; i < startDay; i++) {
             calendarPanel.add(new JLabel(""));
         }
 
+        // Day buttons
         for (int day = 1; day <= daysInMonth; day++) {
-            JButton dayButton = new JButton(String.valueOf(day));
-            dayButton.setFocusPainted(false); //removes the dotted rectangle
-            dayButton.setBorderPainted(true); //draws border
-            dayButton.setBorder(BorderFactory.createLineBorder(Color.gray)); //sets border to a colored line
-            dayButton.setContentAreaFilled(true); //interior of the button is filled
-            dayButton.setOpaque(true); //button is non-transparent
-            dayButton.setBackground(Color.white); //sets button background
-            dayButton.setMargin(new Insets(4,6,4,6)); //padding
 
-            if(day == today && currentMonth.equals(YearMonth.from(todayDate))){
-                dayButton.setBackground(new Color(0xadd8e6));
+            JButton dayButton = new JButton(String.valueOf(day));
+            dayButton.setFocusPainted(false);
+            dayButton.setBorderPainted(true);
+            dayButton.setBorder(BorderFactory.createLineBorder(Color.gray));
+            dayButton.setContentAreaFilled(true);
+            dayButton.setOpaque(true);
+            dayButton.setBackground(Color.white);
+            dayButton.setMargin(new Insets(4, 6, 4, 6));
+
+            LocalDate date = currentMonth.atDay(day);
+
+            // Highlight today
+            if (date.equals(todayDate)) {
+                dayButton.setBackground(new Color(0xADD8E6));
             }
+
+            // ---- NEW: mark days that have events ----
+            List<Event> eventsForDay = eventController.getAllEvents()
+                    .stream()
+                    .filter(ev -> ev.getDate().equals(date))
+                    .toList();
+
+            if (!eventsForDay.isEmpty()) {
+                // change background so it's obvious
+                dayButton.setBackground(new Color(198, 224, 255)); // light blue
+
+                // show number of events in small text under the day number
+                dayButton.setText("<html>" + day + "<br><span style='font-size:9px;'>"
+                        + eventsForDay.size() + " event(s)</span></html>");
+
+                // tooltip with the event titles
+                StringBuilder tip = new StringBuilder("<html>");
+                for (Event ev : eventsForDay) {
+                    tip.append("• ").append(ev.getTitle()).append("<br>");
+                }
+                tip.append("</html>");
+                dayButton.setToolTipText(tip.toString());
+            }
+
+            // store the exact date on the button so the listener can read it
+            dayButton.putClientProperty("date", date);
 
             // --- EVENT CLICK HANDLING ---
             dayButton.addActionListener(e -> {
-
-                int clickedDay = Integer.parseInt(dayButton.getText());
-                LocalDate clickedDate = LocalDate.of(
-                        currentMonth.getYear(),
-                        currentMonth.getMonth(),
-                        clickedDay
-                );
+                LocalDate clickedDate = (LocalDate) dayButton.getClientProperty("date");
 
                 List<Event> events = eventController.getAllEvents()
                         .stream()
                         .filter(ev -> ev.getDate().equals(clickedDate))
                         .toList();
 
-                // If there are events → show popup
+                // If there are events → show popup / separate window
                 if (!events.isEmpty()) {
                     new ViewEventsWindow(clickedDate, events, currentUser, eventController);
                     return;
                 }
-
 
                 // Otherwise → normal create event choices
                 Object[] user_options = {"Create Event"};
@@ -199,12 +213,14 @@ public class CalendarFrame {
 
                 if (choice == 0 || choice == 1) {
                     boolean isPrivate = (choice == 1);
-                    new CreateEventWindow(clickedDate, currentUser);
+                    // TODO: pass isPrivate if your CreateEventWindow takes it
+                    new CreateEventWindow(clickedDate, currentUser, this);
 
-                } //else if (choice == 2) {
-                    //System.out.println("User selected group event");
-                //}
-
+                    // After saving inside CreateEventWindow, call updateCalendar()
+                    // on this CalendarFrame to refresh the display.
+                } else if (choice == 2) {
+                    System.out.println("User selected group event");
+                }
             });
 
             calendarPanel.add(dayButton);
@@ -228,4 +244,5 @@ public class CalendarFrame {
 
         JOptionPane.showMessageDialog(frame, msg.toString());
     }
+
 }
