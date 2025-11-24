@@ -8,6 +8,13 @@
             "type": "java",
             "name": "Launcher",
             "request": "launch",
+            "mainClass": "ui.Launcher",
+            "projectName": "CS370_201b4cd3"
+        },
+        {
+            "type": "java",
+            "name": "Launcher",
+            "request": "launch",
             "mainClass": "Launcher",
             "projectName": "CS370_201b4cd3"
         },

@@ -53,17 +53,24 @@ public class CalendarFrame {
         JPanel sidebarContent = new JPanel();
         sidebarContent.setLayout(new BoxLayout(sidebarContent, BoxLayout.Y_AXIS));
         sidebarContent.setBackground(new Color(245, 245, 245));
-        sidebarContent.setVisible(false);
+        sidebarContent.setVisible(true); // start open
 
+        // --- Top section: Groups ---
         JPanel topSection = new JPanel();
         topSection.setLayout(new BoxLayout(topSection, BoxLayout.Y_AXIS));
         topSection.setBorder(BorderFactory.createTitledBorder("My Groups"));
+
+        JButton addgroupButton = new JButton("➕ Add Group");
+        topSection.add(addgroupButton);
+        addgroupButton.addActionListener(e -> new GroupDetailsFrame());
+
         topSection.add(new JButton("Study Group A"));
         topSection.add(new JButton("Study Group B"));
         sidebarContent.add(topSection);
 
         sidebarContent.add(Box.createVerticalGlue());
 
+        // --- Middle section: Reminders ---
         JPanel middleSection = new JPanel();
         middleSection.setLayout(new BoxLayout(middleSection, BoxLayout.Y_AXIS));
         middleSection.setBorder(BorderFactory.createTitledBorder("Reminders"));
@@ -73,11 +80,17 @@ public class CalendarFrame {
 
         sidebarContent.add(Box.createVerticalGlue());
 
+        // --- Bottom section: Create Event ---
         JPanel bottomSection = new JPanel();
         bottomSection.setLayout(new BoxLayout(bottomSection, BoxLayout.Y_AXIS));
         bottomSection.setBorder(BorderFactory.createTitledBorder("Create Event"));
-        bottomSection.add(new JButton("➕ New Event"));
+
+        JButton event_creator = new JButton("➕ Create Event");
+        bottomSection.add(event_creator);
         sidebarContent.add(bottomSection);
+
+        // Create event from sidebar button
+        event_creator.addActionListener(e -> new CreateEventWindow(this.currentUser, this));
 
         sidebarContainer.add(sidebarContent, BorderLayout.CENTER);
 
@@ -119,6 +132,7 @@ public class CalendarFrame {
         updateCalendar();
     }
 
+    // Made public so CreateEventWindow can call this
     public void updateCalendar() {
         calendarPanel.removeAll();
 
@@ -159,7 +173,7 @@ public class CalendarFrame {
                 dayButton.setBackground(new Color(0xADD8E6));
             }
 
-            // ---- NEW: mark days that have events ----
+            // ---- Mark days that have events ----
             List<Event> eventsForDay = eventController.getAllEvents()
                     .stream()
                     .filter(ev -> ev.getDate().equals(date))
@@ -213,13 +227,8 @@ public class CalendarFrame {
 
                 if (choice == 0 || choice == 1) {
                     boolean isPrivate = (choice == 1);
-                    // TODO: pass isPrivate if your CreateEventWindow takes it
+                    // isPrivate available if you decide to use it later
                     new CreateEventWindow(clickedDate, currentUser, this);
-
-                    // After saving inside CreateEventWindow, call updateCalendar()
-                    // on this CalendarFrame to refresh the display.
-                } else if (choice == 2) {
-                    System.out.println("User selected group event");
                 }
             });
 
