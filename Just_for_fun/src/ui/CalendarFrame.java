@@ -6,11 +6,17 @@ import model.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
 public class CalendarFrame {
+
+    private JPanel sidebarContainer;
+    private JPanel sidebarContent;
 
     private JFrame frame;
     private JPanel calendarPanel;
@@ -40,20 +46,34 @@ public class CalendarFrame {
         this.frame.setVisible(true);
     }
 
-    private void sidebarDisplay() {
+    public void sidebarDisplay() {
         final int sidebarWidth = 180;
 
-        JPanel sidebarContainer = new JPanel(new BorderLayout());
-        sidebarContainer.setPreferredSize(new Dimension(sidebarWidth, frame.getHeight()));
-        frame.add(sidebarContainer, BorderLayout.WEST);
+        // Create sidebar container only once
+        if (sidebarContainer == null) {
+            sidebarContainer = new JPanel(new BorderLayout());
+            sidebarContainer.setPreferredSize(new Dimension(sidebarWidth, frame.getHeight()));
+            frame.add(sidebarContainer, BorderLayout.WEST);
 
-        JButton toggleButton = new JButton("☰ Menu");
-        sidebarContainer.add(toggleButton, BorderLayout.NORTH);
+            // Toggle button
+            JButton toggleButton = new JButton("☰ Menu");
+            sidebarContainer.add(toggleButton, BorderLayout.NORTH);
 
-        JPanel sidebarContent = new JPanel();
-        sidebarContent.setLayout(new BoxLayout(sidebarContent, BoxLayout.Y_AXIS));
-        sidebarContent.setBackground(new Color(245, 245, 245));
-        sidebarContent.setVisible(true); // start open
+            // Content panel (we will clear and rebuild this)
+            sidebarContent = new JPanel();
+            sidebarContent.setLayout(new BoxLayout(sidebarContent, BoxLayout.Y_AXIS));
+            sidebarContent.setBackground(new Color(245, 245, 245));
+            sidebarContainer.add(sidebarContent, BorderLayout.CENTER);
+
+            toggleButton.addActionListener(e -> {
+                sidebarContent.setVisible(!sidebarContent.isVisible());
+                frame.revalidate();
+                frame.repaint();
+            });
+        }
+
+        //clear old content
+        sidebarContent.removeAll();
 
         // --- Top section: Groups ---
         JPanel topSection = new JPanel();
@@ -64,10 +84,25 @@ public class CalendarFrame {
         topSection.add(addgroupButton);
         addgroupButton.addActionListener(e -> new CreateGroupFrame());
 
-        topSection.add(new JButton("Study Group A"));
-        topSection.add(new JButton("Study Group B"));
-        sidebarContent.add(topSection);
+        // Re-read groups from file every time
+        try (BufferedReader br = new BufferedReader(new FileReader("Just_for_fun\\Database\\groups.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
 
+                int id = Integer.parseInt(parts[0].trim());
+                String name = parts[1].trim();
+
+                JButton groupButton = new JButton(name);
+                groupButton.addActionListener(e -> new GroupEditFrame(id, this));
+
+                topSection.add(groupButton);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        sidebarContent.add(topSection);
         sidebarContent.add(Box.createVerticalGlue());
 
         // --- Middle section: Reminders ---
@@ -89,16 +124,13 @@ public class CalendarFrame {
         bottomSection.add(event_creator);
         sidebarContent.add(bottomSection);
 
-        // Create event from sidebar button
         event_creator.addActionListener(e -> new CreateEventWindow(this.currentUser, this));
 
-        sidebarContainer.add(sidebarContent, BorderLayout.CENTER);
-
-        toggleButton.addActionListener(e -> {
-            sidebarContent.setVisible(!sidebarContent.isVisible());
-            frame.revalidate();
-            frame.repaint();
-        });
+        // Force UI update
+        sidebarContent.revalidate();
+        sidebarContent.repaint();
+        frame.revalidate();
+        frame.repaint();
     }
 
     private void calendarDisplay() {
@@ -253,5 +285,7 @@ public class CalendarFrame {
 
         JOptionPane.showMessageDialog(frame, msg.toString());
     }
+
+    
 
 }
