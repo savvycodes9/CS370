@@ -23,11 +23,11 @@ public class CreateGroupFrame {
 
     private void init(){
         groupFrame = new JFrame("Create Group");
-        this.groupFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.groupFrame.setSize(600,400);
-        this.groupFrame.setLocationRelativeTo(null);
-        this.groupFrame.setLayout(new BorderLayout());
-        this.groupFrame.setVisible(true);
+        groupFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        groupFrame.setSize(600,400);
+        groupFrame.setLocationRelativeTo(null);
+        groupFrame.setLayout(new BorderLayout());
+        groupFrame.setVisible(true);
     }
 
     private void requestForm(){

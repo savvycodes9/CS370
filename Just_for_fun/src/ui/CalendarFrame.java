@@ -39,11 +39,12 @@ public class CalendarFrame {
 
     private void init() {
         frame = new JFrame("Fast Track");
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.frame.setSize(600, 400);
-        this.frame.setLocationRelativeTo(null);
-        this.frame.setLayout(new BorderLayout());
-        this.frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setSize(600, 400);
+        frame.setLocationRelativeTo(null);
+        frame.setLayout(new BorderLayout());
+        frame.setVisible(true);
     }
 
     public void sidebarDisplay() {
