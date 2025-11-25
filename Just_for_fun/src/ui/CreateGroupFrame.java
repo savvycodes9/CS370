@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.JButton;
 
-public class GroupDetailsFrame {
+public class CreateGroupFrame {
 
     private JFrame groupFrame;
     private JLabel groupTitleLabel;
@@ -16,7 +16,7 @@ public class GroupDetailsFrame {
     private JPanel userList;
 
 
-    public GroupDetailsFrame(){
+    public CreateGroupFrame(){
         init();
         requestForm();
     }
@@ -86,7 +86,7 @@ public class GroupDetailsFrame {
 
     public static void main(String[] args){
 
-        new GroupDetailsFrame();
+        new CreateGroupFrame();
 
     }
 }

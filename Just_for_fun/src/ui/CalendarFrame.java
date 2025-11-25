@@ -62,7 +62,7 @@ public class CalendarFrame {
 
         JButton addgroupButton = new JButton("➕ Add Group");
         topSection.add(addgroupButton);
-        addgroupButton.addActionListener(e -> new GroupDetailsFrame());
+        addgroupButton.addActionListener(e -> new CreateGroupFrame());
 
         topSection.add(new JButton("Study Group A"));
         topSection.add(new JButton("Study Group B"));
