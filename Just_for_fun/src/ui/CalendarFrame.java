@@ -238,7 +238,7 @@ public class CalendarFrame {
             dayButton.addActionListener(e -> {
                 LocalDate clickedDate = (LocalDate) dayButton.getClientProperty("date");
 
-                List<Event> events = eventController.getAllEvents()
+                List<Event> events = eventController.getEventsByUser(CurrentUserId)
                         .stream()
                         .filter(ev -> ev.getDate().equals(clickedDate))
                         .toList();
