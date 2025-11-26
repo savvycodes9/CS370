@@ -15,4 +15,7 @@ public interface GroupDAO {
 
     boolean addMemberToGroup(int groupId, int userId);
     boolean removeMemberFromGroup(int groupId, int userId);
+    Group getGroupByName(String name);
+
+
 }

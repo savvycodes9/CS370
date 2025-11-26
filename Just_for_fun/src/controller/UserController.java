@@ -38,4 +38,9 @@ public class UserController {
     public User getUserById(int id) {
         return userDAO.getUserById(id);
     }
+
+    public User getUserByUsername(String username) {
+        return userDAO.getUserByUsername(username);
+    }
+
 }

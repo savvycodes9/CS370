@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
+import static ui.GroupEditFrame.GROUP_FILE;
+
 public class CalendarFrame {
 
     private JPanel sidebarContainer;
@@ -85,10 +87,10 @@ public class CalendarFrame {
 
         JButton addgroupButton = new JButton("➕ Add Group");
         topSection.add(addgroupButton);
-        addgroupButton.addActionListener(e -> new CreateGroupFrame());
+        addgroupButton.addActionListener(e -> new CreateGroupFrame(this));
 
         // Re-read groups from file every time
-        try (BufferedReader br = new BufferedReader(new FileReader("Just_for_fun\\Database\\groups.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(GROUP_FILE))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");

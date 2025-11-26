@@ -1,11 +1,16 @@
 package ui;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import model.Group;
+import model.User;
+import controller.GroupController;
+import controller.UserController;
 import model.Group;
 import model.Availability;
 import model.GroupAvailabilityService;
@@ -27,17 +32,34 @@ public class GroupEditFrame extends JFrame{
         private JButton addUserBtn;
         private JButton rmvUserBtn;
         private JPanel userList;
+        private Group currentGroup = null;
 
         private CalendarFrame parent;
         private int groupId;
 
+    private GroupController groupController = new GroupController();
+    private UserController userController = new UserController();
+    private DefaultListModel<String> memberListModel = new DefaultListModel<>();
 
-        public GroupEditFrame(int groupId, CalendarFrame parent){
+
+    public static final String DB_FOLDER =
+            System.getProperty("user.dir") + File.separator + "Just_for_fun" + File.separator + "Database";
+
+    public static final String GROUP_FILE =
+            DB_FOLDER + File.separator + "groups.txt";
+
+    public static final String AVAILABILITY_FILE =
+            DB_FOLDER + File.separator + "availability.txt";
+
+
+
+    public GroupEditFrame(int groupId, CalendarFrame parent){
             this.groupId = groupId;
-        this.parent = parent;
+            this.parent = parent;
 
-        init();
-        requestForm();
+            ensureDatabaseFilesExist();
+            init();
+            requestForm();
         }
 
         private void init(){
@@ -139,7 +161,39 @@ public class GroupEditFrame extends JFrame{
         saveBtn.setBackground(new Color(0xadd8e6));
         saveBtn.addActionListener(e -> {
             // save to database here
-            dispose();
+            String groupName = titleText.getText().trim();
+
+            if (groupName.isEmpty()) {
+                JOptionPane.showMessageDialog(groupFrame, "Group name cannot be empty.");
+                return;
+            }
+
+            boolean ok;
+
+            if (currentGroup == null) {
+                // CREATE GROUP WITH NO OWNER
+                ok = groupController.createGroup(groupName, 0);
+
+                if (!ok) {
+                    JOptionPane.showMessageDialog(groupFrame, "Error saving group.");
+                    return;
+                }
+
+                currentGroup = groupController.getGroupByName(groupName);
+
+            } else {
+                // UPDATE EXISTING GROUP NAME
+                ok = groupController.updateGroup(currentGroup.getGroupId(), groupName);
+
+                if (!ok) {
+                    JOptionPane.showMessageDialog(groupFrame, "Error updating group.");
+                    return;
+                }
+                JOptionPane.showMessageDialog(groupFrame, "Group saved! You may now add members.");
+
+                saveBtn.setText("Close");
+                saveBtn.addActionListener(ev -> groupFrame.dispose());
+            }
         });
         panel.add(saveBtn);
 
@@ -148,6 +202,42 @@ public class GroupEditFrame extends JFrame{
         addUserBtn.setFont(new Font("Arial", Font.PLAIN, 10));
         addUserBtn.addActionListener(e -> {
             // add user logic
+            String username = userText.getText().trim();
+
+            if (username.isEmpty()) {
+                JOptionPane.showMessageDialog(groupFrame, "Enter a username.");
+                return;
+            }
+
+            if (currentGroup == null) {
+                JOptionPane.showMessageDialog(groupFrame, "Save the group first.");
+                return;
+            }
+
+            User u = userController.getUserByUsername(username);
+
+            if (u == null) {
+                JOptionPane.showMessageDialog(groupFrame, "User does not exist.");
+                return;
+            }
+
+            if (currentGroup.getMembers().contains(u.getUserId())) {
+                JOptionPane.showMessageDialog(groupFrame, "User already in group.");
+                return;
+            }
+
+            boolean ok = groupController.addUserToGroup(currentGroup.getGroupId(), u.getUserId());
+
+            if (!ok) {
+                JOptionPane.showMessageDialog(groupFrame, "Error adding user.");
+                return;
+            }
+
+            currentGroup.getMembers().add(u.getUserId());
+            memberListModel.addElement(username);
+
+            JOptionPane.showMessageDialog(groupFrame, "User added!");
+            userText.setText("");
         });
         panel.add(addUserBtn);
 
@@ -156,6 +246,42 @@ public class GroupEditFrame extends JFrame{
         rmvUserBtn.setFont(new Font("Arial", Font.PLAIN, 10));
         rmvUserBtn.addActionListener(e -> {
             // remove user logic
+            String username = userText.getText().trim();
+
+            if (username.isEmpty()) {
+                JOptionPane.showMessageDialog(groupFrame, "Enter a username.");
+                return;
+            }
+
+            if (currentGroup == null) {
+                JOptionPane.showMessageDialog(groupFrame, "Save group first.");
+                return;
+            }
+
+            User u = userController.getUserByUsername(username);
+
+            if (u == null) {
+                JOptionPane.showMessageDialog(groupFrame, "User not found.");
+                return;
+            }
+
+            if (!currentGroup.getMembers().contains(u.getUserId())) {
+                JOptionPane.showMessageDialog(groupFrame, "User is not in this group.");
+                return;
+            }
+
+            boolean ok = groupController.removeUserFromGroup(currentGroup.getGroupId(), u.getUserId());
+
+            if (!ok) {
+                JOptionPane.showMessageDialog(groupFrame, "Error removing user.");
+                return;
+            }
+
+            currentGroup.getMembers().remove((Integer) u.getUserId());
+            memberListModel.removeElement(username);
+
+            JOptionPane.showMessageDialog(groupFrame, "User removed!");
+            userText.setText("");
         });
         panel.add(rmvUserBtn);
 
@@ -179,7 +305,7 @@ public class GroupEditFrame extends JFrame{
         if (choice == JOptionPane.YES_OPTION) {
             try {
                 List<String> lines = Files.readAllLines(
-                        Paths.get("Just_for_fun\\Database\\groups.txt")
+                        Paths.get(GROUP_FILE)
                 );
                 List<String> newLines = new ArrayList<>();
 
@@ -191,7 +317,7 @@ public class GroupEditFrame extends JFrame{
                     }
                 }
 
-                Files.write(Paths.get("Just_for_fun\\Database\\groups.txt"), newLines);
+                Files.write(Paths.get(GROUP_FILE), newLines);
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -228,7 +354,7 @@ public class GroupEditFrame extends JFrame{
 
     private Group loadGroupById(int groupId) throws java.io.IOException {
     try (java.io.BufferedReader br = new java.io.BufferedReader(
-            new java.io.FileReader("Just_for_fun\\Database\\groups.txt"))) {
+            new java.io.FileReader(GROUP_FILE))) {
 
         String line;
         while ((line = br.readLine()) != null) {
@@ -273,7 +399,7 @@ public class GroupEditFrame extends JFrame{
         java.util.List<Availability> result = new java.util.ArrayList<>();
 
         try (java.io.BufferedReader br = new java.io.BufferedReader(
-                new java.io.FileReader("Just_for_fun\\Database\\availability.txt"))) {
+                new java.io.FileReader(AVAILABILITY_FILE))) {
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -300,6 +426,24 @@ public class GroupEditFrame extends JFrame{
 
         return result;
     }
+
+    private void ensureDatabaseFilesExist() {
+        try {
+            Files.createDirectories(Paths.get(DB_FOLDER));
+
+            if (!Files.exists(Paths.get(GROUP_FILE))) {
+                Files.write(Paths.get(GROUP_FILE), new ArrayList<>());
+            }
+
+            if (!Files.exists(Paths.get(AVAILABILITY_FILE))) {
+                Files.write(Paths.get(AVAILABILITY_FILE), new ArrayList<>());
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
 
 }
 

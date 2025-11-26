@@ -35,9 +35,7 @@ public class EventDAOImpl implements EventDAO {
         return max + 1;
     }
 
-    // ======================
-    // READ ALL EVENTS
-    // ======================
+    // Read all events
     @Override
     public List<Event> getAllEvents() {
         ensureFileExists();
@@ -92,9 +90,7 @@ public class EventDAOImpl implements EventDAO {
     }
 
 
-    // ======================
-    // EVENT LOOKUPS
-    // ======================
+    // Event lookups
     @Override
     public Event getEventById(int eventId) {
         for (Event e : getAllEvents()) {
@@ -130,9 +126,7 @@ public class EventDAOImpl implements EventDAO {
         return list;
     }
 
-    // ======================
-    // SAVE EVENT
-    // ======================
+    // Save event
     @Override
     public boolean saveEvent(Event event) {
         List<Event> events = getAllEvents();
@@ -161,9 +155,7 @@ public class EventDAOImpl implements EventDAO {
         }
     }
 
-    // ======================
-    // UPDATE EVENT
-    // ======================
+    // Update event
     @Override
     public boolean updateEvent(Event updatedEvent) {
         List<Event> events = getAllEvents();
@@ -210,9 +202,7 @@ public class EventDAOImpl implements EventDAO {
         }
     }
 
-    // ======================
-    // DELETE EVENT
-    // ======================
+    // Delete event
     @Override
     public boolean deleteEvent(int eventId) {
         List<Event> events = getAllEvents();

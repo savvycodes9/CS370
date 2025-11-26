@@ -21,9 +21,7 @@ public class ScheduleController {
         this.availabilityDAO = new AvailabilityDAOImpl();
     }
 
-    // ---------------------------------------------------------
-    // GET OR CREATE SCHEDULE
-    // ---------------------------------------------------------
+    // Get or create schedule
     public Schedule getOrCreateScheduleByUserId(int userId) {
 
         Schedule schedule = scheduleDAO.getScheduleByUserId(userId);
@@ -38,9 +36,7 @@ public class ScheduleController {
         return schedule;
     }
 
-    // ---------------------------------------------------------
-    // DIRECT SCHEDULE GETTERS
-    // ---------------------------------------------------------
+    // Direct schedule getters
     public Schedule getScheduleByUserId(int userId) {
         return scheduleDAO.getScheduleByUserId(userId);
     }
@@ -53,9 +49,7 @@ public class ScheduleController {
         return scheduleDAO.getAllSchedules();
     }
 
-    // ---------------------------------------------------------
-    // ADD AVAILABILITY BLOCK
-    // ---------------------------------------------------------
+    // Add availability block
     public boolean addAvailabilityToSchedule(int userId, String date, String startTime, String endTime, boolean isAvailable) {
 
         if (date == null || date.trim().isEmpty()) {
@@ -87,9 +81,7 @@ public class ScheduleController {
         return scheduleDAO.updateSchedule(schedule);
     }
 
-    // ---------------------------------------------------------
-    // REMOVE AVAILABILITY BLOCK
-    // ---------------------------------------------------------
+    // Remove availability block
     public boolean removeAvailabilityFromSchedule(int userId, int availabilityId) {
 
         Schedule schedule = getScheduleByUserId(userId);
@@ -111,9 +103,7 @@ public class ScheduleController {
         return scheduleDAO.updateSchedule(schedule);
     }
 
-    // ---------------------------------------------------------
-    // GET USER FREE TIME (AVAILABLE SLOTS)
-    // ---------------------------------------------------------
+    // Get user free time
     public List<Availability> getFreeSlots(int userId) {
 
         Schedule schedule = getScheduleByUserId(userId);
@@ -131,9 +121,7 @@ public class ScheduleController {
         return free;
     }
 
-    // ---------------------------------------------------------
-    // GET ALL AVAILABILITY BLOCKS FOR USER
-    // ---------------------------------------------------------
+    // Get all availabiltiy for users
     public List<Availability> getAllAvailabilities(int userId) {
 
         Schedule schedule = getScheduleByUserId(userId);
@@ -149,9 +137,7 @@ public class ScheduleController {
         return result;
     }
 
-    // ---------------------------------------------------------
-    // UPDATE STATUS (MARK AVAILABLE / UNAVAILABLE)
-    // ---------------------------------------------------------
+    // Update status
     public boolean updateAvailabilityStatus(int availabilityId, boolean isAvailable) {
 
         Availability availability = availabilityDAO.getAvailabilityById(availabilityId);
@@ -164,9 +150,7 @@ public class ScheduleController {
         return availabilityDAO.updateAvailability(availability);
     }
 
-    // ---------------------------------------------------------
-    // DELETE SCHEDULE
-    // ---------------------------------------------------------
+    // Delete schedule
     public boolean deleteSchedule(int scheduleId) {
         return scheduleDAO.deleteSchedule(scheduleId);
     }

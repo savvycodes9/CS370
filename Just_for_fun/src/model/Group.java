@@ -10,9 +10,6 @@ public class Group {
     private int ownerUserId;
     private List<Integer> members;
 
-    // ---------------------------------------------------------
-    // CONSTRUCTOR
-    // ---------------------------------------------------------
     public Group(int groupId, String name, int ownerUserId, List<Integer> members) {
         this.groupId = groupId;
         this.name = name;
@@ -26,7 +23,7 @@ public class Group {
     }
 
 
-    // OPTIONAL convenience constructor for creating new groups
+    // Convenience constructor for creating new groups
     public Group(int groupId, String name, int ownerUserId) {
         this.groupId = groupId;
         this.name = name;
@@ -40,10 +37,7 @@ public class Group {
         this.groupId = groupId;
     }
 
-
-    // ---------------------------------------------------------
-    // GETTERS
-    // ---------------------------------------------------------
+    // Getters
     public int getGroupId() {
         return groupId;
     }
@@ -60,9 +54,7 @@ public class Group {
         return members;
     }
 
-    // ---------------------------------------------------------
-    // ADD / REMOVE MEMBERS
-    // ---------------------------------------------------------
+    // Add/remove members
     public void addMember(int userId) {
         if (!members.contains(userId)) {
             members.add(userId);
@@ -71,6 +63,10 @@ public class Group {
 
     public void removeMember(int userId) {
         members.remove(Integer.valueOf(userId));
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

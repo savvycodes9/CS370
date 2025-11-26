@@ -24,7 +24,7 @@ public class GroupDAOImpl implements GroupDAO {
         } catch (IOException ignored) {}
     }
 
-    // ========= Utility =========
+    // Utility
 
     private int getNextGroupId(List<Group> groups) {
         int max = 0;
@@ -50,7 +50,7 @@ public class GroupDAOImpl implements GroupDAO {
         return members;
     }
 
-    // ========= CRUD IMPLEMENTATION =========
+    // Crud implement
 
     @Override
     public List<Group> getAllGroups() {
@@ -60,19 +60,26 @@ public class GroupDAOImpl implements GroupDAO {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] p = line.split(",");
-                if (p.length == 3) {
-                    int id = Integer.parseInt(p[0]);
-                    String name = p[1];
-                    int owner = Integer.parseInt(p[2]);
 
-                    Group g = new Group(id, name, owner, loadMembers(id));
-                    groups.add(g);
+                if (p.length >= 3) {
+                    try {
+                        int id = Integer.parseInt(p[0].trim());
+                        String name = p[1].trim();
+                        int owner = Integer.parseInt(p[2].trim());
+
+                        Group g = new Group(id, name, owner, loadMembers(id));
+                        groups.add(g);
+
+                    } catch (NumberFormatException ignored) {
+                        // skips malformed rows safely
+                    }
                 }
             }
         } catch (IOException ignored) {}
 
         return groups;
     }
+
 
     @Override
     public Group getGroupById(int groupId) {
@@ -199,4 +206,18 @@ public class GroupDAOImpl implements GroupDAO {
         new File(MEMBER_FILE + ".tmp").renameTo(new File(MEMBER_FILE));
         return true;
     }
+
+    @Override
+    public Group getGroupByName(String name) {
+        List<Group> groups = getAllGroups();
+        for (Group g : groups) {
+            if (g.getName().equalsIgnoreCase(name)) {
+                return g;
+            }
+        }
+        return null;
+    }
+
+
+
 }

@@ -25,9 +25,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         } catch (IOException ignored) {}
     }
 
-    // ---------------------------------------------------------
     // Read all schedules from file
-    // ---------------------------------------------------------
     @Override
     public List<Schedule> getAllSchedules() {
         List<Schedule> schedules = new ArrayList<>();
@@ -58,9 +56,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         return schedules;
     }
 
-    // ---------------------------------------------------------
     // Get schedule by ID
-    // ---------------------------------------------------------
     @Override
     public Schedule getScheduleById(int scheduleId) {
         for (Schedule s : getAllSchedules()) {
@@ -69,9 +65,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         return null;
     }
 
-    // ---------------------------------------------------------
     // Get schedule by userId
-    // ---------------------------------------------------------
     @Override
     public Schedule getScheduleByUserId(int userId) {
         for (Schedule s : getAllSchedules()) {
@@ -80,9 +74,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         return null;
     }
 
-    // ---------------------------------------------------------
     // Create a blank schedule for a new user
-    // ---------------------------------------------------------
     @Override
     public boolean createScheduleForUser(int userId) {
         int newId = getNextId();
@@ -92,9 +84,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         return saveSchedule(schedule);
     }
 
-    // ---------------------------------------------------------
     // Save (append) schedule to file
-    // ---------------------------------------------------------
     @Override
     public boolean saveSchedule(Schedule schedule) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
@@ -120,9 +110,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         }
     }
 
-    // ---------------------------------------------------------
     // Update schedule (rewrite entire file)
-    // ---------------------------------------------------------
     @Override
     public boolean updateSchedule(Schedule updated) {
         List<Schedule> all = getAllSchedules();
@@ -157,9 +145,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         }
     }
 
-    // ---------------------------------------------------------
     // Delete schedule
-    // ---------------------------------------------------------
     @Override
     public boolean deleteSchedule(int scheduleId) {
         List<Schedule> all = getAllSchedules();
@@ -192,9 +178,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         }
     }
 
-    // ---------------------------------------------------------
     // Get next auto-incremented ID
-    // ---------------------------------------------------------
     private int getNextId() {
         int max = 0;
         for (Schedule s : getAllSchedules()) {

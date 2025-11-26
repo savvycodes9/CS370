@@ -88,7 +88,7 @@ public class UserDAOImpl implements UserDAO {
         List<User> users = getAllUsers();
         int newId = getNextId(users);
 
-        // set new userId
+        // Set new userId
         user.setUserId(newId);
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH, true))) {

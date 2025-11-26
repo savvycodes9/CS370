@@ -16,9 +16,7 @@ public class EventController {
         this.eventDAO = new EventDAOImpl();
     }
 
-    // ==========================
-    // CREATE EVENT
-    // ==========================
+    // Create Event
     public boolean createEvent(String title, String description,
                                LocalDate date, LocalTime startTime,
                                LocalTime endTime, String location,
@@ -53,44 +51,32 @@ public class EventController {
         return eventDAO.saveEvent(newEvent);
     }
 
-    // ==========================
-    // GET EVENT BY ID
-    // ==========================
+    // Get event by id
     public Event getEventById(int eventId) {
         return eventDAO.getEventById(eventId);
     }
 
-    // ==========================
-    // GET ALL EVENTS
-    // ==========================
+    // Get all events
     public List<Event> getAllEvents() {
         return eventDAO.getAllEvents();
     }
 
-    // ==========================
-    // GET USER EVENTS
-    // ==========================
+    // Get user events
     public List<Event> getEventsByUser(int userId) {
         return eventDAO.getEventsByUser(userId);
     }
 
-    // ==========================
-    // GET GROUP EVENTS
-    // ==========================
+    // Get group events
     public List<Event> getEventsByGroup(int groupId) {
         return eventDAO.getEventsByGroup(groupId);
     }
 
-    // ==========================
-    // GET PUBLIC EVENTS
-    // ==========================
+    // Get public events
     public List<Event> getPublicEvents() {
         return eventDAO.getPublicEvents();
     }
 
-    // ==========================
-    // UPDATE EVENT
-    // ==========================
+    // Update event
     public boolean updateEvent(int eventId, String title, String description,
                                LocalDate date, LocalTime startTime,
                                LocalTime endTime, String location,
@@ -125,16 +111,12 @@ public class EventController {
         return eventDAO.updateEvent(event);
     }
 
-    // ==========================
-    // DELETE EVENT
-    // ==========================
+    // Delete event
     public boolean deleteEvent(int eventId) {
         return eventDAO.deleteEvent(eventId);
     }
 
-    // ==========================
-    // AUTHORIZATION CHECK
-    // ==========================
+    // Authorization check
     public boolean isUserAuthorizedToModifyEvent(int userId, int eventId) {
         Event event = eventDAO.getEventById(eventId);
         return event != null && event.getCreatedByUserId() == userId;

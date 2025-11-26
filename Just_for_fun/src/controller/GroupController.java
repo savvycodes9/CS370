@@ -15,9 +15,7 @@ public class GroupController {
         this.groupDAO = new GroupDAOImpl();
     }
 
-    // ---------------------------------------------------------
-    // CREATE GROUP
-    // ---------------------------------------------------------
+    // Create group
     public boolean createGroup(String name, int ownerUserId) {
 
         if (name == null || name.trim().isEmpty()) {
@@ -39,23 +37,17 @@ public class GroupController {
         return groupDAO.saveGroup(group);
     }
 
-    // ---------------------------------------------------------
-    // ADD MEMBER
-    // ---------------------------------------------------------
+    // Add member
     public boolean addUserToGroup(int groupId, int userId) {
         return groupDAO.addMemberToGroup(groupId, userId);
     }
 
-    // ---------------------------------------------------------
-    // REMOVE MEMBER
-    // ---------------------------------------------------------
+    // Remove user
     public boolean removeUserFromGroup(int groupId, int userId) {
         return groupDAO.removeMemberFromGroup(groupId, userId);
     }
 
-    // ---------------------------------------------------------
-    // GET GROUP INFO
-    // ---------------------------------------------------------
+    // Get group info
     public Group getGroupById(int groupId) {
         return groupDAO.getGroupById(groupId);
     }
@@ -68,4 +60,21 @@ public class GroupController {
         Group group = groupDAO.getGroupById(groupId);
         return group != null ? group.getMembers() : new ArrayList<>();
     }
+
+    public Group getGroupByName(String name) {
+        return groupDAO.getGroupByName(name);
+    }
+
+    public boolean updateGroup(int groupId, String newName) {
+        Group group = groupDAO.getGroupById(groupId);
+
+        if (group == null) {
+            return false;
+        }
+
+        group.setName(newName);
+        return groupDAO.updateGroup(group);
+    }
+
+
 }

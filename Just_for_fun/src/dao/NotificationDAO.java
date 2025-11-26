@@ -39,7 +39,7 @@ public class NotificationDAO {
         return max + 1;
     }
 
-    // Load ALL notifications
+    // Load all notifications
     public List<Notification> getAllNotifications() {
         ensureFileExists();
         List<Notification> list = new ArrayList<>();
