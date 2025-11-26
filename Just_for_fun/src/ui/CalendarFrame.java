@@ -24,12 +24,14 @@ public class CalendarFrame {
 
     private YearMonth currentMonth;
     private User currentUser;
+    private int CurrentUserId;
 
     private EventController eventController;
 
     public CalendarFrame(User currentUser) {
         this.currentUser = currentUser;
         this.eventController = new EventController();
+        CurrentUserId = currentUser.getUserId();
 
         init();
         calendarDisplay();
@@ -207,7 +209,7 @@ public class CalendarFrame {
             }
 
             // ---- Mark days that have events ----
-            List<Event> eventsForDay = eventController.getAllEvents()
+            List<Event> eventsForDay = eventController.getEventsByUser(CurrentUserId)
                     .stream()
                     .filter(ev -> ev.getDate().equals(date))
                     .toList();
@@ -287,6 +289,6 @@ public class CalendarFrame {
         JOptionPane.showMessageDialog(frame, msg.toString());
     }
 
-    
+
 
 }
