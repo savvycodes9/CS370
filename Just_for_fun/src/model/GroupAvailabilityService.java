@@ -119,4 +119,80 @@ public class GroupAvailabilityService {
 
         return output;
     }
+
+        // ================== BUSY -> FREE HELPERS ==================
+
+    // Represents a time when the user is BUSY (has an event)
+    public static class BusyInterval {
+        public LocalTime start;
+        public LocalTime end;
+
+        public BusyInterval(LocalTime start, LocalTime end) {
+            this.start = start;
+            this.end = end;
+        }
+    }
+
+    /**
+     * Given BUSY intervals for ONE user on a day, return that user's FREE intervals
+     * between 00:00 and 23:59.
+     */
+    public List<Interval> invertBusyToFree(List<BusyInterval> busyList) {
+        List<Interval> free = new ArrayList<>();
+
+        if (busyList == null || busyList.isEmpty()) {
+            // No events -> user is free all day
+            free.add(new Interval(LocalTime.of(0, 0), LocalTime.of(23, 59)));
+            return free;
+        }
+
+        busyList.sort(Comparator.comparing(b -> b.start));
+
+        LocalTime dayStart = LocalTime.of(0, 0);
+        LocalTime dayEnd   = LocalTime.of(23, 59);
+        LocalTime cursor   = dayStart;
+
+        for (BusyInterval b : busyList) {
+            // Free before this busy block
+            if (b.start.isAfter(cursor)) {
+                free.add(new Interval(cursor, b.start));
+            }
+            // Advance cursor to the end of this busy block
+            if (b.end.isAfter(cursor)) {
+                cursor = b.end;
+            }
+        }
+
+        // Free after last busy block
+        if (cursor.isBefore(dayEnd)) {
+            free.add(new Interval(cursor, dayEnd));
+        }
+
+        return free;
+    }
+
+    /**
+     * Given FREE intervals per user and the member IDs of a group,
+     * intersect everyone's FREE time to get common availability.
+     */
+    public List<Interval> computeFromFreeMap(
+            Map<Integer, List<Interval>> freePerUser,
+            List<Integer> memberIds) {
+
+        List<List<Interval>> usersIntervals = new ArrayList<>();
+
+        for (int uid : memberIds) {
+            List<Interval> free = freePerUser.getOrDefault(uid, List.of());
+            if (free.isEmpty()) {
+                // someone is never free that day -> no common time
+                return List.of();
+            }
+            usersIntervals.add(free);
+        }
+
+        if (usersIntervals.isEmpty()) return List.of();
+
+        return intersectAll(usersIntervals); // uses your existing intersectAll(...)
+    }
+
 }

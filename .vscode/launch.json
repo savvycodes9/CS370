@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "GroupEditFrame",
+            "request": "launch",
+            "mainClass": "ui.GroupEditFrame",
+            "projectName": "CS370_201b4cd3"
+        },
+        {
+            "type": "java",
+            "name": "CreateGroupFrame",
+            "request": "launch",
+            "mainClass": "ui.CreateGroupFrame",
+            "projectName": "CS370_201b4cd3"
+        },
+        {
+            "type": "java",
             "name": "Launcher",
             "request": "launch",
             "mainClass": "ui.Launcher",
