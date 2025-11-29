@@ -11,24 +11,19 @@ import javax.swing.JButton;
 public class CreateGroupFrame {
 
     private JFrame groupFrame;
-    private JLabel groupTitleLabel;
-    private JLabel addUserLabel;
     private JTextField titleText;
     private JTextField userText;
     private JButton saveBtn;
     private JButton addUserBtn;
-    private JButton rmvUserBtn;
-    private JPanel userList;
     private Group currentGroup = null;
     private CalendarFrame parent;
 
     private GroupController groupController = new GroupController();
     private UserController userController = new UserController();
     private DefaultListModel<String> memberListModel = new DefaultListModel<>();
+    private JList<String> memberList;
 
-
-
-    public CreateGroupFrame(CalendarFrame parent){
+    public CreateGroupFrame(CalendarFrame parent) {
         this.parent = parent;
         init();
         requestForm();
@@ -38,96 +33,105 @@ public class CreateGroupFrame {
         this(null);
     }
 
-    private void init(){
+    private void init() {
         groupFrame = new JFrame("Create Group");
         groupFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        groupFrame.setSize(600,400);
+        groupFrame.setSize(600, 400);
         groupFrame.setLocationRelativeTo(null);
         groupFrame.setLayout(new BorderLayout());
-        groupFrame.setVisible(true);
     }
 
-    private void requestForm(){
+    private void requestForm() {
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        saveBtn = new JButton("Save Group");
+        saveBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        saveBtn.setBackground(new Color(0xADD8E6));
+        saveBtn.setFocusPainted(false);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
+        leftPanel.add(Box.createVerticalStrut(10));
+        leftPanel.add(saveBtn);
+        leftPanel.add(Box.createVerticalGlue());
 
-        groupTitleLabel = new JLabel("Group Title: ");
-        groupTitleLabel.setBounds(200,20,200,25);
-        panel.add(groupTitleLabel);
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
-        titleText = new JTextField();
-        titleText.setBounds(300,20,130,25);
-        panel.add(titleText);
+        JPanel titleRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        titleRow.add(new JLabel("Group Title:"));
+        titleText = new JTextField(15);
+        titleRow.add(titleText);
+        centerPanel.add(titleRow);
 
-        addUserLabel = new JLabel("Add User: ");
-        addUserLabel.setBounds(200,50,200,25);
-        panel.add(addUserLabel);
+        JPanel userRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        userRow.add(new JLabel("Username:"));
+        userText = new JTextField(15);
+        userRow.add(userText);
 
+        addUserBtn = new JButton("Add");
+        userRow.add(addUserBtn);
+        centerPanel.add(userRow);
 
-        userText = new JTextField();
-        userText.setBounds(300,50,130,25);
-        panel.add(userText);
+        memberList = new JList<>(memberListModel);
+        memberList.setCellRenderer(new MemberRenderer());
 
-        JButton saveBtn = new JButton("Save Group");
-        panel.add(saveBtn);
-        saveBtn.setBounds(10,20,150,100);
-        saveBtn.addActionListener(e-> {
-                    // here is where people click save and then it saves to the database
-                    String groupName = titleText.getText().trim();
+        JScrollPane scroll = new JScrollPane(memberList);
+        scroll.setPreferredSize(new Dimension(350, 200));
 
-                    if (groupName.isEmpty()) {
-                        JOptionPane.showMessageDialog(groupFrame, "Group name cannot be empty.");
-                        return;
-                    }
+        JPanel listWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        listWrapper.add(scroll);
 
-                    boolean ok;
+        centerPanel.add(listWrapper);
+        saveBtn.addActionListener(e -> {
+            // here is where people click save and then it saves to the database
+            String groupName = titleText.getText().trim();
 
-                    if (currentGroup == null) {
-                        // CREATE GROUP WITH NO OWNER
-                        ok = groupController.createGroup(groupName, 0);
+            if (groupName.isEmpty()) {
+                JOptionPane.showMessageDialog(groupFrame, "Group name cannot be empty.");
+                return;
+            }
 
-                        if (!ok) {
-                            JOptionPane.showMessageDialog(groupFrame, "Error saving group.");
-                            return;
-                        }
+            boolean ok;
 
-                        currentGroup = groupController.getGroupByName(groupName);
+            if (currentGroup == null) {
+                // CREATE GROUP WITH NO OWNER
+                ok = groupController.createGroup(groupName, 0);
 
-                        JOptionPane.showMessageDialog(groupFrame, "Group saved! You may now add members.");
-                        saveBtn.setText("Close");
+                if (!ok) {
+                    JOptionPane.showMessageDialog(groupFrame, "Error saving group.");
+                    return;
+                }
 
-                        for (var al : saveBtn.getActionListeners()) saveBtn.removeActionListener(al);
+                currentGroup = groupController.getGroupByName(groupName);
 
-                        saveBtn.addActionListener(ev -> {
-                            if (parent != null) parent.sidebarDisplay();
-                            groupFrame.dispose();
-                        });
+                JOptionPane.showMessageDialog(groupFrame, "Group saved! You may now add members.");
+                saveBtn.setText("Close");
 
-                    } else {
-                        // UPDATE EXISTING GROUP NAME
-                        ok = groupController.updateGroup(currentGroup.getGroupId(), groupName);
+                for (var al : saveBtn.getActionListeners()) saveBtn.removeActionListener(al);
 
-                        if (!ok) {
-                            JOptionPane.showMessageDialog(groupFrame, "Error updating group.");
-                            return;
-                        }
-                        JOptionPane.showMessageDialog(groupFrame, "Group saved! You may now add members.");
-
-                        saveBtn.setText("Close");
-                        saveBtn.addActionListener(ev -> {
-                            if (parent != null) parent.sidebarDisplay();
-                            groupFrame.dispose();
-                        });
-                    }
+                saveBtn.addActionListener(ev -> {
+                    if (parent != null) parent.sidebarDisplay();
+                    groupFrame.dispose();
                 });
 
-        saveBtn.setBackground(new Color(0xadd8e6));
+            } else {
+                // UPDATE EXISTING GROUP NAME
+                ok = groupController.updateGroup(currentGroup.getGroupId(), groupName);
 
-        JButton addUserBtn = new JButton("Add");
-        addUserBtn.setBounds(450,50,90,20);
-        addUserBtn.setFont(new Font("Arial", Font.PLAIN, 10));
-        addUserBtn.addActionListener(e->{
+                if (!ok) {
+                    JOptionPane.showMessageDialog(groupFrame, "Error updating group.");
+                    return;
+                }
+                JOptionPane.showMessageDialog(groupFrame, "Group saved! You may now add members.");
+
+                saveBtn.setText("Close");
+                saveBtn.addActionListener(ev -> {
+                    if (parent != null) parent.sidebarDisplay();
+                    groupFrame.dispose();
+                });
+            }
+        });
+
+        addUserBtn.addActionListener(e -> {
             //something needs to be added for entering the username and linking it to database and then returning to the this frame and displaying the user name at the bottom
             String username = userText.getText().trim();
 
@@ -167,61 +171,73 @@ public class CreateGroupFrame {
             userText.setText("");
         });
 
-        rmvUserBtn = new JButton("Remove user");
-        rmvUserBtn.setBounds(450,100,90,20);
-        rmvUserBtn.setFont(new Font("Arial", Font.PLAIN, 10));
-        rmvUserBtn.addActionListener(e->{
-            //something to verify user is in group and then displays that user being removed successfully
-            String username = userText.getText().trim();
+        memberList.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int index = memberList.locationToIndex(e.getPoint());
+                if (index == -1) return;
 
-            if (username.isEmpty()) {
-                JOptionPane.showMessageDialog(groupFrame, "Enter a username.");
-                return;
+                Rectangle cellBounds = memberList.getCellBounds(index, index);
+                int clickX = e.getX();
+
+                if (clickX > cellBounds.x + cellBounds.width - 45) { //removes users
+                    String username = memberListModel.get(index);
+                    User u = userController.getUserByUsername(username);
+
+                    if (u != null) {
+                        boolean ok = groupController.removeUserFromGroup(currentGroup.getGroupId(), u.getUserId());
+                        if (!ok) {
+                            JOptionPane.showMessageDialog(groupFrame, "Error removing user.");
+                            return;
+                        }
+
+                        currentGroup.getMembers().remove((Integer) u.getUserId());
+                        memberListModel.remove(index);
+                    }
+                }
             }
-
-            if (currentGroup == null) {
-                JOptionPane.showMessageDialog(groupFrame, "Save group first.");
-                return;
-            }
-
-            User u = userController.getUserByUsername(username);
-
-            if (u == null) {
-                JOptionPane.showMessageDialog(groupFrame, "User not found.");
-                return;
-            }
-
-            if (!currentGroup.getMembers().contains(u.getUserId())) {
-                JOptionPane.showMessageDialog(groupFrame, "User is not in this group.");
-                return;
-            }
-
-            boolean ok = groupController.removeUserFromGroup(currentGroup.getGroupId(), u.getUserId());
-
-            if (!ok) {
-                JOptionPane.showMessageDialog(groupFrame, "Error removing user.");
-                return;
-            }
-
-            currentGroup.getMembers().remove((Integer) u.getUserId());
-            memberListModel.removeElement(username);
-
-            JOptionPane.showMessageDialog(groupFrame, "User removed!");
-            userText.setText("");
         });
 
-
-        panel.add(addUserBtn);
-        panel.add(rmvUserBtn);
-
-        groupFrame.add(panel);
+        groupFrame.add(leftPanel, BorderLayout.WEST);
+        groupFrame.add(centerPanel, BorderLayout.CENTER);
         groupFrame.setVisible(true);
     }
 
-    public static void main(String[] args){
+    class MemberRenderer extends JPanel implements ListCellRenderer<String> {
 
+        private JLabel nameLabel = new JLabel();
+        private JButton removeBtn = new JButton("-"); //
+
+        public MemberRenderer() {
+            setLayout(new BorderLayout(5, 0));
+            removeBtn.setPreferredSize(new Dimension(40, 20));
+            removeBtn.setFocusPainted(false);
+            removeBtn.setBackground(new Color(255, 180, 180));
+            add(nameLabel, BorderLayout.CENTER);
+            add(removeBtn, BorderLayout.EAST);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(
+                JList<? extends String> list,
+                String value,
+                int index,
+                boolean isSelected,
+                boolean cellHasFocus) {
+
+            nameLabel.setText(value);
+
+            if (isSelected) {
+                setBackground(new Color(220, 220, 255));
+            } else {
+                setBackground(Color.WHITE);
+            }
+
+            return this;
+        }
+    }
+
+    public static void main(String[] args) {
         new CreateGroupFrame();
-
     }
 }
-
